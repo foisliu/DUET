@@ -17,9 +17,11 @@ band6_data_error = np.loadtxt('/Users/liuxihe/Desktop/DUET/DUET_data_2/band3_ban
 # 计算spectral index，使用公式S_nu = nu^alpha
 spectral_index = (np.log10(band6_data / band3_data)) / (np.log10(band6_freq / band3_freq))
 
-spectral_index_error = np.log10((band6_data / band3_data) * (np.sqrt((band6_data_error / band6_data) ** 2 + (band3_data_error / band3_data) ** 2)))
+# Using the error propagation in the case of f = A/ B
+spectral_index_error = (band6_data / band3_data) * np.sqrt((band6_data_error / band6_data) ** 2 + (band3_data_error / band3_data) ** 2)
 
-spectral_index_error_error = abs(spectral_index_error/((band6_data / band3_data) * np.log(10)))
+# Using the error propagation in the case of f = a*ln(A)
+spectral_index_error_error = 1/np.log(band6_freq/band3_freq) * spectral_index_error / (band6_data / band3_data)
 # 创建一个新的numpy数组，第一列为序号，第二列为spectral index
 output_data = np.column_stack((np.arange(1, len(spectral_index) + 1), spectral_index, spectral_index_error_error))
 
